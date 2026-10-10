@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ประมวลตัวชี้วัดประจำปีการศึกษา 2569</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+  :root{
+    --primary:#F472B6;
+    --accent:#60A5FA;
+    --bg:#FFFFFF;
+    --soft:#FFF1F7;
+    --soft-blue:#EFF6FF;
+    --text:#2b2b3a;
+    --muted:#9494a5;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;min-height:100vh;
+    font-family:'Kanit',sans-serif;
+    background:
+      radial-gradient(circle at 8% 15%, rgba(244,114,182,0.12), transparent 40%),
+      radial-gradient(circle at 92% 85%, rgba(96,165,250,0.14), transparent 40%),
+      linear-gradient(135deg,#FFF9FC,#F5FAFF);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    overflow:hidden;padding:14px;
+  }
+  .stage{width:94vw;max-width:1280px;aspect-ratio:16/9;position:relative;}
+  .slide{
+    position:absolute;inset:0;
+    background:var(--bg);
+    border-radius:28px;
+    box-shadow:0 25px 60px rgba(244,114,182,0.16),0 6px 18px rgba(32,32,60,0.06);
+    display:none;flex-direction:column;
+    padding:clamp(20px,3.6vw,50px);
+    overflow:hidden;
+  }
+  .slide.active{display:flex;}
+  .page-num{position:absolute;bottom:18px;right:26px;font-size:13px;color:#cfcfdb;font-weight:500;}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;align-self:flex-start;
+    background:var(--soft);color:var(--primary);font-weight:600;
+    font-size:clamp(11px,1.05vw,13px);padding:6px 16px;border-radius:999px;margin-bottom:14px;
+  }
+  .slide-header{display:flex;align-items:center;gap:18px;margin-bottom:18px;}
+  .slide-title{font-size:clamp(20px,2.9vw,34px);font-weight:800;color:var(--text);margin:0;line-height:1.3;}
+  .slide-sub{font-size:clamp(12px,1.2vw,15px);color:var(--muted);margin:4px 0 0;font-weight:400;}
+  .gradient-text{
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .icon-circle{
+    flex-shrink:0;width:clamp(48px,5.2vw,66px);height:clamp(48px,5.2vw,66px);
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:clamp(18px,2.1vw,26px);
+    box-shadow:0 10px 22px rgba(0,0,0,0.14);
+    transition:transform .35s ease;
+  }
+  .icon-circle:hover{transform:scale(1.15) rotate(-5deg);}
+  .icon-circle.pink{background:linear-gradient(135deg,#F472B6,#ff9bd1);}
+  .icon-circle.blue{background:linear-gradient(135deg,#60A5FA,#93c5fd);}
+  .icon-circle.mix{background:linear-gradient(135deg,#F472B6,#60A5FA);}
+  .icon-circle.dark{background:linear-gradient(135deg,#6b6b85,#9191a8);}
+
+  .content{flex:1;display:flex;flex-direction:column;gap:16px;overflow:auto;min-height:0;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;}
+  .grid.cols2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+  .grid.cols3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+
+  .card{
+    border-radius:18px;padding:16px 16px;position:relative;
+    animation:floatUp .6s cubic-bezier(.2,.7,.3,1) both;
+    animation-delay:calc(var(--d,0) * 90ms);
+  }
+  .card.light{background:var(--soft);color:var(--text);}
+  .card.light-blue{background:var(--soft-blue);color:var(--text);}
+  .card.dark{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;}
+  .card.gray{background:#F6F6F9;color:var(--text);}
+  .card .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .card .num{font-size:clamp(20px,2.4vw,30px);font-weight:800;line-height:1;}
+  .card .lbl{font-size:clamp(11.5px,1.05vw,13.5px);font-weight:600;margin-top:4px;}
+  .card .pct{font-size:clamp(11px,.95vw,12.5px);opacity:.85;margin-top:2px;}
+  .card .desc{font-size:clamp(11px,.95vw,12.5px);opacity:.9;line-height:1.5;margin-top:6px;}
+  .card .mini-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:rgba(255,255,255,0.6);}
+  .card.dark .mini-icon{background:rgba(255,255,255,0.25);color:#fff;}
+
+  @keyframes floatUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+
+  .highlight-bar{
+    border-radius:18px;padding:18px 22px;color:#fff;
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    display:flex;align-items:center;gap:16px;
+    animation:floatUp .6s cubic-bezier(.2,.7,.3,1) both;animation-delay:.5s;
+  }
+  .highlight-bar .big{font-size:clamp(24px,3vw,34px);font-weight:800;}
+  .highlight-bar .txt{font-size:clamp(12px,1.1vw,15px);opacity:.95;}
+
+  table{width:100%;border-collapse:collapse;font-size:clamp(11.5px,1.05vw,14px);
+    animation:floatUp .6s cubic-bezier(.2,.7,.3,1) both;animation-delay:.3s;}
+  thead tr{background:linear-gradient(90deg,var(--primary),var(--accent));color:#fff;}
+  th,td{padding:9px 12px;text-align:center;}
+  tbody tr:nth-child(even){background:var(--soft);}
+  tbody tr:nth-child(odd){background:#fff;}
+  td.star{color:var(--primary);font-weight:700;}
+
+  .quote-card{
+    border-radius:18px;padding:18px 24px;background:var(--soft-blue);
+    border-left:5px solid var(--accent);font-weight:600;color:var(--text);
+    font-size:clamp(12.5px,1.15vw,15px);
+    animation:floatUp .6s cubic-bezier(.2,.7,.3,1) both;animation-delay:.6s;
+  }
+
+  .cover-badge{background:var(--soft-blue);color:var(--accent);}
+
+  .controls{margin-top:16px;display:flex;align-items:center;gap:18px;}
+  .controls button{
+    width:44px;height:44px;border-radius:50%;border:none;background:#fff;
+    box-shadow:0 8px 18px rgba(96,165,250,0.18);color:var(--primary);
+    font-size:16px;cursor:pointer;transition:.2s;
+  }
+  .controls button:hover{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;transform:scale(1.08);}
+  .dots{display:flex;gap:8px;}
+  .dot{width:9px;height:9px;border-radius:50%;background:#e9d7e3;cursor:pointer;transition:.25s;}
+  .dot.active{width:26px;border-radius:6px;background:linear-gradient(90deg,var(--primary),var(--accent));}
+  .counter{margin-top:8px;font-size:12.5px;color:#aaa;font-weight:500;letter-spacing:.5px;}
+
+  @media (max-width:720px){
+    .slide-header{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- SLIDE 1 : COVER -->
+  <section class="slide active">
+    <div class="badge cover-badge"><i class="fa-solid fa-star"></i>&nbsp; ปีการศึกษา 2569</div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;">
+      <div class="icon-circle mix" style="width:76px;height:76px;font-size:32px;"><i class="fa-solid fa-chart-pie"></i></div>
+      <h1 class="slide-title" style="font-size:clamp(28px,4.2vw,48px);">ประมวล<span class="gradient-text">ตัวชี้วัด</span><br>ประจำปีการศึกษา 2569</h1>
+      <p class="slide-sub" style="font-size:clamp(13px,1.4vw,17px);">โรงเรียนหาดใหญ่วิทยาคาร &nbsp;|&nbsp; หอพักนักเรียนหญิง</p>
+      <div style="margin-top:6px;">
+        <div style="font-weight:700;color:var(--text);font-size:clamp(14px,1.4vw,17px);">นำเสนอโดย ครูมารินา ศรียศ</div>
+        <div style="color:var(--muted);font-size:clamp(12px,1.1vw,14px);margin-top:3px;">ครูดูแลนักเรียนหอพักหญิง ประจำโรงเรียนหาดใหญ่วิทยาคาร</div>
+      </div>
+      <div class="badge" style="margin-top:10px;"><i class="fa-solid fa-users"></i>&nbsp; สำหรับทีมครูดูแลหอพัก / ผู้บริหารโรงเรียน / ครูและบุคลากร</div>
+    </div>
+    <div class="page-num">01/10</div>
+  </section>
+
+  <!-- SLIDE 2 : ภาพรวม -->
+  <section class="slide">
+    <div class="badge"><i class="fa-solid fa-layer-group"></i>&nbsp; ภาพรวมโครงการ</div>
+    <div class="slide-header">
+      <div class="icon-circle pink"><i class="fa-solid fa-graduation-cap"></i></div>
+      <div>
+        <h2 class="slide-title">ภาพรวมการติดตาม<span class="gradient-text">ตัวชี้วัด</span>นักเรียนหอพักหญิง</h2>
+        <p class="slide-sub">ข้อมูลประจำปีการศึกษา 2569 จาก 3 มิติหลัก</p>
+      </div>
+    </div>
+    <div class="content">
+      <div class="highlight-bar">
+        <div class="mini-icon" style="width:50px;height:50px;font-size:20px;"><i class="fa-solid fa-user-group"></i></div>
+        <div>
+          <div class="big">241 คน</div>
+          <div class="txt">จำนวนนักเรียนหอพักหญิงทั้งหมดที่ติดตามข้อมูล</div>
+        </div>
+      </div>
+      <div class="grid cols3">
+        <div class="card light" style="--d:1">
+          <div class="mini-icon"><i class="fa-solid fa-mobile-screen" style="color:var(--primary)"></i></div>
+          <div class="lbl" style="margin-top:10px;font-size:15px;">พฤติกรรมทั่วไป</div>
+          <div class="desc">การฝากอุปกรณ์ การแต่งกาย และการอยู่ในบริเวณที่กำหนด</div>
+        </div>
+        <div class="card light-blue" style="--d:2">
+          <div class="mini-icon"><i class="fa-solid fa-person-praying" style="color:var(--accent)"></i></div>
+          <div class="lbl" style="margin-top:10px;font-size:15px;">การปฏิบัติศาสนกิจ</div>
+          <div class="desc">ความตรงเวลาในการละหมาดและความสม่ำเสมอ</div>
+        </div>
+        <div class="card light" style="--d:3">
+          <div class="mini-icon"><i class="fa-solid fa-building" style="color:var(--primary)"></i></div>
+          <div class="lbl" style="margin-top:10px;font-size:15px;">หอพักฟาตอนะฮ์</div>
+          <div class="desc">พฤติกรรมเฉพาะของนักเรียนประจำหอพักฟาตอนะฮ์</div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">02/10</div>
+  </section>
+
+  <!-- SLIDE 3 : พฤติกรรมไม่พึงประสงค์ สิงหาคม -->
+  <section class="slide">
+    <div class="badge"><i class="fa-solid fa-clipboard-list"></i>&nbsp; พฤติกรรม · สิงหาคม 2569</div>
+    <div class="slide-header">
+      <div class="icon-circle blue"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div>
+        <h2 class="slide-title">สรุป<span class="gradient-text">พฤติกรรม</span>ที่ไม่พึงประสงค์</h2>
+        <p class="slide-sub">นักเรียนหญิงทั้งหมด 241 คน</p>
+      </div>
+    </div>
+    <div class="content">
+      <div class="grid">
+        <div class="card light" style="--d:1"><div class="mini-icon"><i class="fa-solid fa-mobile-screen" style="color:var(--primary)"></i></div><div class="num">7</div><div class="lbl">ไม่ฝากโทรศัพท์</div><div class="pct">2.90%</div></div>
+        <div class="card light" style="--d:2"><div class="mini-icon"><i class="fa-solid fa-tablet-screen-button" style="color:var(--primary)"></i></div><div class="num">3</div><div class="lbl">ไม่ฝากไอแพด</div><div class="pct">1.24%</div></div>
+        <div class="card light" style="--d:3"><div class="mini-icon"><i class="fa-solid fa-triangle-exclamation" style="color:var(--primary)"></i></div><div class="num">2</div><div class="lbl">ฝากโทรศัพท์ปลอม</div><div class="pct">0.83%</div></div>
+        <div class="card light" style="--d:4"><div class="mini-icon"><i class="fa-solid fa-music" style="color:var(--primary)"></i></div><div class="num">2</div><div class="lbl">เปิดเพลง/แต่งกายไม่เรียบร้อย</div><div class="pct">0.83%</div></div>
+        <div class="card light" style="--d:5"><div class="mini-icon"><i class="fa-solid fa-door-open" style="color:var(--primary)"></i></div><div class="num">1</div><div class="lbl">ไม่อยู่ในบริเวณที่กำหนด</div><div class="pct">0.41%</div></div>
+      </div>
+      <div class="highlight-bar">
+        <div class="mini-icon" style="width:50px;height:50px;font-size:20px;"><i class="fa-solid fa-chart-column"></i></div>
+        <div>
+          <div class="big">รวม 15 คน</div>
+          <div class="txt">คิดเป็น 6.22% ของนักเรียนทั้งหมด (คำนวณจากจำนวนนักเรียนทั้งหมด 241 คน)</div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">03/10</div>
+  </section>
+
+  <!-- SLIDE 4 : ข้อเสนอแนะพฤติกรรม -->
+  <section class="slide">
+    <div class="badge"><i class="fa-solid fa-lightbulb"></i>&nbsp; แนวทางพัฒนา</div>
+    <div class="slide-header">
+      <div class="icon-circle pink"><i class="fa-solid fa-handshake-angle"></i></div>
+      <div>
+        <h2 class="slide-title">ข้อเสนอแนะเพื่อ<span class="gradient-text">เสริมวินัย</span>นักเรียน</h2>
+        <p class="slide-sub">5 แนวทางหลักจากการวิเคราะห์พฤติกรรม</p>
+      </div>
+    </div>
+    <div class="content">
+      <div class="grid cols3">
+        <div class="card light" style="--d:1"><div class="mini-icon"><i class="fa-solid fa-bullhorn" style="color:var(--primary)"></i></div><div class="lbl" style="font-size:14.5px;margin-top:8px;">1. สร้างความตระหนักรู้</div><div class="desc">เสริมความเข้าใจกฎระเบียบและผลกระทบของพฤติกรรมที่ไม่พึงประสงค์</div></div>
+        <div class="card light-blue" style="--d:2"><div class="mini-icon"><i class="fa-solid fa-clipboard-check" style="color:var(--accent)"></i></div><div class="lbl" style="font-size:14.5px;margin-top:8px;">2. กำกับติดตามต่อเนื่อง</div><div class="desc">ครูประจำชั้นและครูที่ปรึกษาติดตามอย่างสม่ำเสมอ</div></div>
+        <div class="card light" style="--d:3"><div class="mini-icon"><i class="fa-solid fa-comments" style="color:var(--primary)"></i></div><div class="lbl" style="font-size:14.5px;margin-top:8px;">3. สื่อสารและให้คำปรึกษา</div><div class="desc">พูดคุย รับฟังปัญหา และปรับเปลี่ยนพฤติกรรมในทางที่ดี</div></div>
+        <div class="card light-blue" style="--d:4"><div class="mini-icon"><i class="fa-solid fa-award" style="color:var(--accent)"></i></div><div class="lbl" style="font-size:14.5px;margin-top:8px;">4. เสริมแรงเชิงบวก</div><div class="desc">ชมเชยและให้รางวัลนักเรียนที่มีพฤติกรรมดี เป็นแบบอย่าง</div></div>
+        <div class="card light" style="--d:5"><div class="mini-icon"><i class="fa-solid fa-people-roof" style="color:var(--primary)"></i></div><div class="lbl" style="font-size:14.5px;margin-top:8px;">5. ความร่วมมือกับผู้ปกครอง</div><div class="desc">ประสานงานติดตามและส่งเสริมพฤติกรรมที่ดีร่วมกัน</div></div>
+      </div>
+      <div class="quote-card">"วินัยดี เริ่มที่เรา สังคมดี เริ่มที่โรงเรียน"</div>
+    </div>
+    <div class="page-num">04/10</div>
+  </section>
+
+  <!-- SLIDE 5 : ศาสนกิจสิงหาคม -->
+  <section class="slide">
+    <div class="badge"><i class="fa-solid fa-moon"></i>&nbsp; ศาสนกิจ · สิงหาคม 2569</div>
+    <div class="slide-header">
+      <div class="icon-circle blue"><i class="fa-solid fa-person-praying"></i></div>
+      <div>
+        <h2 class="slide-title">สรุปผลการ<span class="gradient-text">ปฏิบัติศาสนกิจ</span></h2>
+        <p class="slide-sub">นักเรียนหญิงทั้งหมด 241 คน</p>
+      </div>
+    </div>
+    <div class="content">
+      <div class="grid cols3">
+        <div class="card dark" style="--d:1"><div class="mini-icon"><i class="fa-solid fa-clock"></i></div><div class="num">183 คน</div><div class="lbl">ปฏิบัติศาสนกิจตามเวลา</div><div class="pct">75.9%</div></div>
+        <div class="card light" style="--d:2"><div class="mini-icon"><i class="fa-solid fa-hourglass-half" style="color:var(--primary)"></i></div><div class="num">52 คน</div><div class="lbl">สายละหมาด</div><div class="pct">21.6%</div></div>
+        <div class="card gray" style="--d:3"><div class="mini-icon"><i class="fa-solid fa-circle-xmark" style="color:#8a8a9a"></i></div><div class="num">6 คน</div><div class="lbl">ไม่ลงละหมาด</div><div class="pct">2.5%</div></div>
+      </div>
+      <div class="quote-card">"มุ่งส่งเสริมให้นักเรียนเห็นคุณค่าของการละหมาด และรักษาเวลาในการปฏิบัติศาสนกิจ"</div>
+    </div>
+    <div class="page-num">05/10</div>
+  </section>
+
+  <!-- SLIDE 6 : ข้อเสนอแนะต่อเนื่อง 7 ข้อ -->
+  <section class="slide">
+    <div class="badge"><i class="fa-solid fa-lightbulb"></i>&nbsp; แนวทางพัฒนา · ศาสนกิจ</div>
+    <div class="slide-header">
+      <div class="icon-circle mix"><i class="fa-solid fa-route"></i></div>
+      <div>
+        <h2 class="slide-title">ข้อเสนอแนะเพื่อ<span class="gradient-text">พัฒนาอย่างต่อเนื่อง</span></h2>
+        <p class="slide-sub">7 แนวทางเสริมสร้างวินัยด้านศาสนกิจ</p>
+      </div>
+    </div>
+    <div class="content">
+      <div class="grid">
+        <div class="card light" style="--d:1"><div class="num" style="font-size:18px;color:var(--primary)">01</div><div class="desc" style="margin-top:6px;">เสริมสร้างความเข้าใจในคุณค่าของการละหมาดอย่างใกล้ชิด</div></div>
+        <div class="card light-blue" style="--d:2"><div class="num" style="font-size:18px;color:var(--accent)">02</div><div class="desc" style="margin-top:6px;">จัด Workshop เรื่องความสำคัญของเวลาและการรักษาศาสนกิจ</div></div>
+        <div class="card light" style="--d:3"><div class="num" style="font-size:18px;color:var(--primary)">03</div><div class="desc" style="margin-top:6px;">พัฒนาระบบ Mentor/Buddies ดูแลรายบุคคลกลุ่มที่ติดขัด</div></div>
+        <div class="card light-blue" style="--d:4"><div class="num" style="font-size:18px;color:var(--accent)">04</div><div class="desc" style="margin-top:6px;">ปรับปรุงสถานที่ละหมาดให้เอื้ออำนวยและดึงดูดใจ</div></div>
+        <div class="card light" style="--d:5"><div class="num" style="font-size:18px;color:var(--primary)">05</div><div class="desc" style="margin-top:6px;">เชิญวิทยากร/แบบอย่างที่ดี มาสร้างแรงบันดาลใจ</div></div>
+        <div class="card light-blue" style="--d:6"><div class="num" style="font-size:18px;color:var(--accent)">06</div><div class="desc" style="margin-top:6px;">สร้างวัฒนธรรมการติดตามที่มั่นคงและเป็นระบบในโรงเรียน</div></div>
+        <div class="card light" style="--d:7"><div class="num" style="font-size:18px;color:var(--primary)">07</div><div class="desc" style="margin-top:6px;">มอบรางวัล/ประกาศเกียรติคุณนักเรียนที่มีวินัยดีเด่น</div></div>
+      </div>
+    </div>
+    <div class="page-num">06/10</div>
+  </section>
+
+  <!-- SLIDE 7 : หอพักฟาตอนะฮ์ กรกฎาคม -->
+  <section class="slide">
+    <div class="badge"><i class="fa-solid fa-building-shield"></i>&nbsp; หอพักฟาตอนะฮ์ · กรกฎาคม</div>
+    <div class="slide-header">
+      <div class="icon-circle pink"><i class="fa-solid fa-building"></i></div>
+      <div>
+        <h2 class="slide-title">ข้อมูล<span class="gradient-text">พฤติกรรม</span>นักเรียนหอพักฟาตอนะฮ์</h2>
+        <p class="slide-sub">รวมทั้งหมด 31 คน</p>
+      </div>
+    </div>
+    <div class="content">
+      <div class="grid">
+        <div class="card light" style="--d:1"><div class="mini-icon"><i class="fa-solid fa-mobile-screen" style="color:var(--primary)"></i></div><div class="num">13</div><div class="lbl">ไม่ฝากโทรศัพท์</div><div class="pct">37.1%</div></div>
+        <div class="card dark" style="--d:2"><div class="mini-icon"><i class="fa-solid fa-tablet-screen-button"></i></div><div class="num">14</div><div class="lbl">ไม่ฝากไอแพด</div><div class="pct">40.0%</div></div>
+        <div class="card light" style="--d:3"><div class="mini-icon"><i class="fa-solid fa-triangle-exclamation" style="color:var(--primary)"></i></div><div class="num">3</div><div class="lbl">ฝากโทรศัพท์ปลอม</div><div class="pct">8.6%</div></div>
+        <div class="card gray" style="--d:4"><div class="mini-icon"><i class="fa-solid fa-person-running" style="color:#8a8a9a"></i></div><div class="num">1</div><div class="lbl">หนีออกด้านนอก</div><div class="pct">2.9%</div></div>
+      </div>
+      <div class="highlight-bar">
+        <div class="mini-icon" style="width:50px;height:50px;font-size:20px;"><i class="fa-solid fa-star"></i></div>
+        <div>
+          <div class="big">14 คน (40.0%)</div>
+          <div class="txt">พฤติกรรมที่พบมากที่สุด คือ "ไม่ฝากไอแพด"</div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">07/10</div>
+  </section>
+
+  <!-- SLIDE 8 : วิเคราะห์เชิงบวก + ข้อเสนอแนะ -->
+  <section class="slide">
+    <div class="badge"><i class="fa-solid fa-magnifying-glass-chart"></i>&nbsp; วิเคราะห์เชิงบวก</div>
+    <div class="slide-header">
+      <div class="icon-circle blue"><i class="fa-solid fa-shield-heart"></i></div>
+      <div>
+        <h2 class="slide-title"><span class="gradient-text">จุดแข็ง</span>และแนวทางพัฒนาหอพัก</h2>
+        <p class="slide-sub">จากข้อมูลพฤติกรรมเดือนกรกฎาคม หอพักฟาตอนะฮ์</p>
+      </div>
+    </div>
+    <div class="content">
+      <div class="grid cols2">
+        <div class="card light" style="--d:1"><div class="mini-icon"><i class="fa-solid fa-check" style="color:var(--primary)"></i></div><div class="lbl" style="margin-top:8px;">จำนวนรวมไม่สูงมาก</div><div class="desc">31 คน คิดเป็นสัดส่วนที่ไม่มาก ภาพรวมส่วนใหญ่มีพฤติกรรมที่ดี</div></div>
+        <div class="card light-blue" style="--d:2"><div class="mini-icon"><i class="fa-solid fa-check" style="color:var(--accent)"></i></div><div class="lbl" style="margin-top:8px;">ไม่พบพฤติกรรมรุนแรง</div><div class="desc">ไม่มีพฤติกรรมเสี่ยงต่อความปลอดภัยร้ายแรง</div></div>
+        <div class="card light" style="--d:3"><div class="mini-icon"><i class="fa-solid fa-check" style="color:var(--primary)"></i></div><div class="lbl" style="margin-top:8px;">มีมาตรการชัดเจนเข้มงวด</div><div class="desc">การกำหนดบทลงโทษช่วยสร้างวินัยและความรับผิดชอบ</div></div>
+        <div class="card light-blue" style="--d:4"><div class="mini-icon"><i class="fa-solid fa-check" style="color:var(--accent)"></i></div><div class="lbl" style="margin-top:8px;">เป็นโอกาสในการพัฒนา</div><div class="desc">ช่วยวางแผน ให้ความรู้ ป้องกัน ดูแลนักเรียนตรงจุดยิ่งขึ้น</div></div>
+      </div>
+      <div class="grid cols2">
+        <div class="card gray" style="--d:5"><div class="mini-icon"><i class="fa-solid fa-book-open" style="color:var(--primary)"></i></div><div class="lbl" style="margin-top:8px;">เสริมสร้างความรู้</div><div class="desc">กฎระเบียบ การใช้เทคโนโลยีอย่างเหมาะสม</div></div>
+        <div class="card gray" style="--d:6"><div class="mini-icon"><i class="fa-solid fa-comments" style="color:var(--accent)"></i></div><div class="lbl" style="margin-top:8px;">สื่อสารอย่างใกล้ชิด</div><div class="desc">พูดคุยต่อเนื่อง ป้องกันการกระทำผิดซ้ำ</div></div>
+      </div>
+    </div>
+    <div class="page-num">08/10</div>
+  </section>
+
+  <!-- SLIDE 9 : สรุปศาสนกิจภาพรวม + ตาราง -->
+  <section class="slide">
+    <div class="badge"><i class="fa-solid fa-mosque"></i>&nbsp; ศาสนกิจ · ภาพรวมทั้งปี</div>
+    <div class="slide-header">
+      <div class="icon-circle mix"><i class="fa-solid fa-chart-simple"></i></div>
+      <div>
+        <h2 class="slide-title">สรุปผล<span class="gradient-text">การปฏิบัติศาสนกิจ</span>นักเรียนหอพักหญิง</h2>
+        <p class="slide-sub">นักเรียนหอพักทั้งหมด 241 คน</p>
+      </div>
+    </div>
+    <div class="content">
+      <div class="grid cols3">
+        <div class="card dark" style="--d:1"><div class="num">168 คน</div><div class="lbl">เข้าร่วมละหมาดตรงเวลา</div><div class="pct">69.7%</div></div>
+        <div class="card light" style="--d:2"><div class="num" style="color:var(--text)">73 คน</div><div class="lbl">เข้าร่วมละหมาดสาย</div><div class="pct">30.3%</div></div>
+        <div class="card gray" style="--d:3"><div class="num" style="color:var(--text)">15 คน</div><div class="lbl">ไม่เข้าร่วมละหมาด</div><div class="pct">6.2%</div></div>
+      </div>
+      <table style="--d:4">
+        <thead><tr><th>ระดับชั้น</th><th>เข้าร่วมละหมาดสาย</th><th>ไม่เข้าร่วมละหมาด</th></tr></thead>
+        <tbody>
+          <tr><td>ม.1</td><td>14</td><td>1</td></tr>
+          <tr><td>ม.2</td><td>9</td><td>4</td></tr>
+          <tr><td>ม.3</td><td>12</td><td class="star">0 ★</td></tr>
+          <tr><td>ม.4</td><td>15</td><td>3</td></tr>
+          <tr><td>ม.5</td><td>10</td><td>1</td></tr>
+          <tr><td>ม.6</td><td>13</td><td>6</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-num">09/10</div>
+  </section>
+
+  <!-- SLIDE 10 : สรุปภาพรวม + ปิดท้าย -->
+  <section class="slide">
+    <div class="badge"><i class="fa-solid fa-flag-checkered"></i>&nbsp; บทสรุป</div>
+    <div class="slide-header">
+      <div class="icon-circle pink"><i class="fa-solid fa-heart"></i></div>
+      <div>
+        <h2 class="slide-title"><span class="gradient-text">สรุปภาพรวม</span>และแนวทางต่อไป</h2>
+        <p class="slide-sub">ก้าวต่อไปเพื่อพัฒนานักเรียนหอพักหญิงร่วมกัน</p>
+      </div>
+    </div>
+    <div class="content">
+      <div class="grid cols3">
+        <div class="card light" style="--d:1"><div class="mini-icon"><i class="fa-solid fa-clock" style="color:var(--primary)"></i></div><div class="lbl" style="margin-top:8px;">69.7% ตรงเวลา</div><div class="desc">นักเรียนส่วนใหญ่เข้าร่วมละหมาดตรงเวลา</div></div>
+        <div class="card dark" style="--d:2"><div class="mini-icon"><i class="fa-solid fa-star"></i></div><div class="lbl" style="margin-top:8px;">ม.3 ตัวอย่างเด่น</div><div class="desc">ไม่มีนักเรียนขาดละหมาดเลยแม้แต่คนเดียว</div></div>
+        <div class="card light-blue" style="--d:3"><div class="mini-icon"><i class="fa-solid fa-hands-holding-circle" style="color:var(--accent)"></i></div><div class="lbl" style="margin-top:8px;">ความร่วมมือดี</div><div class="desc">นักเรียนให้ความร่วมมือในระดับที่น่าพอใจ</div></div>
+      </div>
+      <div class="grid cols3">
+        <div class="card gray" style="--d:4"><div class="mini-icon"><i class="fa-solid fa-arrow-trend-up" style="color:var(--primary)"></i></div><div class="lbl" style="margin-top:8px;">วินัยด้านเวลา</div><div class="desc">ส่งเสริมการเข้าร่วมละหมาดตรงเวลาอย่างต่อเนื่อง</div></div>
+        <div class="card gray" style="--d:5"><div class="mini-icon"><i class="fa-solid fa-user-group" style="color:var(--accent)"></i></div><div class="lbl" style="margin-top:8px;">เพื่อนชวนเพื่อน</div><div class="desc">สร้างแรงจูงใจเชิงบวกระหว่างเพื่อนนักเรียน</div></div>
+        <div class="card gray" style="--d:6"><div class="mini-icon"><i class="fa-solid fa-user-check" style="color:var(--primary)"></i></div><div class="lbl" style="margin-top:8px;">ติดตามรายบุคคล</div><div class="desc">ดูแลใกล้ชิดนักเรียนที่มาสายและไม่เข้าร่วม</div></div>
+      </div>
+      <div class="quote-card">"ความสำเร็จที่แท้จริง เริ่มต้นจากการละหมาดที่เราไม่เคยขาด" — ขอบคุณทุกท่านที่ร่วมมือกันดูแลนักเรียนหอพักหญิงเสมอมา</div>
+    </div>
+    <div class="page-num">10/10</div>
+  </section>
+
+</div>
+
+<div class="controls">
+  <button id="prevBtn" aria-label="ก่อนหน้า"><i class="fa-solid fa-chevron-left"></i></button>
+  <div class="dots" id="dots"></div>
+  <button id="nextBtn" aria-label="ถัดไป"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+<div class="counter" id="counter">1 / 10</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsContainer = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  let current = 0;
+
+  slides.forEach((s,i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0 ? ' active' : '');
+    d.addEventListener('click', ()=> goTo(i));
+    dotsContainer.appendChild(d);
+  });
+  const dots = document.querySelectorAll('.dot');
+
+  function update(){
+    slides.forEach((s,i)=> s.classList.toggle('active', i===current));
+    dots.forEach((d,i)=> d.classList.toggle('active', i===current));
+    counter.textContent = (current+1) + ' / ' + slides.length;
+  }
+  function goTo(i){
+    current = (i + slides.length) % slides.length;
+    update();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', ()=> goTo(current-1));
+  document.getElementById('nextBtn').addEventListener('click', ()=> goTo(current+1));
+  window.addEventListener('keydown', (e)=>{
+    if(e.key === 'ArrowRight') goTo(current+1);
+    if(e.key === 'ArrowLeft') goTo(current-1);
+  });
+
+  update();
+</script>
+</body>
+</html>
